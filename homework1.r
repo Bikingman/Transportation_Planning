@@ -4,10 +4,10 @@
 x <- (c(1:12)^2)
 
 #1b) Print 1st:3rd
-print(a[c(1:3)])
+print(x[c(1:3)])
 
 #1c) print 3rd,7th,1st
-print(a[c(3, 7, 1)])
+print(x[c(3, 7, 1)])
 
 #1d) display boolean vector, indicated elemants = 100
 x==100
@@ -28,6 +28,8 @@ each person (personID) and household (hhid)
 use a hhsurvey-trips file).  Provide a summary statistics of total 
 travel distance variable for person and household. 
 """
+
+# download data from file and use read.csv() to upload
 personID <- 
   personID <- subset()
 
