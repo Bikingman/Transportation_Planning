@@ -1,8 +1,3 @@
-git remote add origin git@github.com:Bikingman/Transport_Planning_Lab.git
-git push -u origin master
-
-
-
 ################### part 1
 
 #1a) Create vector 1:12, values = ^2, call this vector x
@@ -33,6 +28,8 @@ each person (personID) and household (hhid)
 use a hhsurvey-trips file).  Provide a summary statistics of total 
 travel distance variable for person and household. 
 """
+
+#next download files and upload with read.csv()
 personID <- 
   personID <- subset()
 
