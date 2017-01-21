@@ -1,3 +1,7 @@
+git remote add origin git@github.com:Bikingman/Transport_Planning_Lab.git
+git push -u origin master
+
+
 
 ################### part 1
 
@@ -32,6 +36,4 @@ travel distance variable for person and household.
 personID <- 
   personID <- subset()
 
-hhid <-   
-  
-  
+hhid <- 
