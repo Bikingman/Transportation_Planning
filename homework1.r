@@ -36,7 +36,7 @@ setwd("D:/MSc Transport Planning/Transport_Planning_Lab/Homework_1/2014-hhsurvey
 
 # download data from file and use read.csv() to upload- converted in excel
 require(xlsx)
-personID1 <- read.xlsx("2014-pr3-hhsurvey-persons.xlsx", sep=',' ,header=T)
+personID1 <- read.csv("2014-pr3-hhsurvey-persons.csv", sep=',' ,header=T)
 trips <- read.csv("2014-pr3-hhsurvey-trips.csv", sep=',' ,header=T)
 hhveh <- read.csv("2014-pr3-hhsurvey-vehicles.csv", sep=',' ,header=T)
 
