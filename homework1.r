@@ -20,28 +20,39 @@ y <- rev(x)
 
 ################## part 2
   
-"""
-2a)	Calculate total travel distance 
-(find the distance variable from codebook) for 
-each person (personID) and household (hhid) 
-(save them as distance_person and distance_household, respectively; 
-use a hhsurvey-trips file).  Provide a summary statistics of total 
-travel distance variable for person and household. 
-
-#distance variable is = gdist
-
-"""
+#Download travel survey data and codebook from:  
+#http://www.psrc.org/data/transportation/travel-surveys/2014-household/2014-household-3/
 
 setwd("D:/MSc Transport Planning/Transport_Planning_Lab/Homework_1/2014-hhsurvey")
-
-# download data from file and use read.csv() to upload- converted in excel
-require(xlsx)
+hhid1 <- read.csv("2014-pr3-hhsurvey-households.csv", sep=',' ,header=T)
 personID1 <- read.csv("2014-pr3-hhsurvey-persons.csv", sep=',' ,header=T)
 trips <- read.csv("2014-pr3-hhsurvey-trips.csv", sep=',' ,header=T)
 hhveh <- read.csv("2014-pr3-hhsurvey-vehicles.csv", sep=',' ,header=T)
 
+"""
+a)	Calculate total travel distance 
+(find the distance variable from codebook) for each person 
+(personID) and household (hhid) (save them as distance_person 
+and distance_household, respectively; use a hhsurvey-trips file). 
+Provide a summary statistics of total travel distance variable for person and 
+household (Please remove all missing or unexpected data). 
+"""
+
 distance_person <- aggregate(gdist ~ personID, data =trips, FUN = sum)
+head(distance_person)
+nrow(distance_person)
+sum(is.na(distance_person))
+distance_person <- distance_person[c(distance_person$gdist > 0 & distance_person$gdist <= 300),]
+nrow(distance_person)
+summary(distance_person$gdist)
+
 distance_household <- aggregate(gdist ~ hhid, data=trips, FUN=sum)
+head(distance_household)
+nrow(distance_household)
+sum(is.na(distance_household))
+distance_household <- distance_household[c(distance_household$gdist > 0 & distance_household$gdist <= 300),]
+summary(distance_household$gdist)
+
   
 """ 
 b)	Create new data (household) that includes household id, 
@@ -51,31 +62,17 @@ Display summary statistics of all variables in the data except id.
 Find its dimensions.
 """
 
-setwd("D:/MSc Transport Planning/Transport_Planning_Lab/Homework_1/2014-hhsurvey")
-hhid1 <- read.csv("2014-pr3-hhsurvey-households.csv", sep=',' ,header=T)
 household <- subset(hhid1, select = c(hhid, vehicle_count, hhsize, numworkers))
-household <- na.omit(household)
+sum(is.na(household))
 summary(household[, c("vehicle_count", "hhsize", "numworkers")])
 dim(household)
-
-#Questions
-#accourding to PDF there was no, "perfer not to awnser" option in any selected variables, can exclude this correct? 
-#by "find its dimensions" you are looking for dimesions of entire housefold object?  
-# http://www.psrc.org/assets/12061/2014-Household-Survey-Dataset-Guide.pdf
-
 
 """ 
 c)	Display the data contained in the first 10 rows and 
 in all columns except column 4.  
 """
 
-trips[1:10, -4]
-hhid1[1:10, -4]
-
-#Quetsions 
-#from which dataset? households? trips?...
-
-
+household[1:10, -4]
  
 """ 
 d)	Merge new data (household) and total travel distance 
@@ -86,17 +83,11 @@ total travel distance, smallest to largest. (for this problem,
 please google to find proper functions. You can also find a way to 
 insert title and axis labels).  
 """
-setwd("D:\MSc Transport Planning\Transport_Planning_Lab\Homework_1\2014-hhsurvey")
 
 new_distance_household <- merge(household, distance_household, by = "hhid")
 new_distance_household <- na.omit(new_distance_household)
-
-with(new_distance_household, cor.test(gdist, hhsize, 
-                                      alternative="two.sided", method="pearson"))
-
-hist(log(new_distance_household$gdist), main = "Total Travel Distance by Household", 
-     xlab = "log(distance)", ylab = "count")
-
+with(new_distance_household, cor.test(gdist, hhsize, alternative="two.sided", method="pearson"))
+hist(log(new_distance_household$gdist), main = "Total Travel Distance by Household", xlab = "distance (log scale)", ylab = "frequency")
 sorted <- sort(new_distance_household$gdist, decreasing = F)
  
 
