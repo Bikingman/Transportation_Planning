@@ -50,7 +50,7 @@ distance_household <- aggregate(gdist ~ hhid, data=trips, FUN=sum)
 head(distance_household)
 nrow(distance_household)
 sum(is.na(distance_household))
-distance_household <- distance_household[c(distance_household$gdist > 0 & distance_household$gdist <= 300),]
+distance_household <- distance_household[c(distance_household$gdist > 0 & distance_household$gdist <= 600),]
 summary(distance_household$gdist)
 
   
@@ -64,6 +64,7 @@ Find its dimensions.
 
 household <- subset(hhid1, select = c(hhid, vehicle_count, hhsize, numworkers))
 sum(is.na(household))
+sum(which(household==98))
 summary(household[, c("vehicle_count", "hhsize", "numworkers")])
 dim(household)
 
