@@ -1,0 +1,271 @@
+
+######TWITTER SCRAPING######
+
+
+#########WORKFLOW###########
+######SET UP HANDSHAKE######
+###EXTRAT SCOTRAIL TWEEKS###
+########CLEAN DATA##########
+######CREATE WORDCLOUD######
+####CREATE HISTOGRAMS#######
+
+
+#mostly gathered from https://rpubs.com/abNY2015/90345 - please refer to this document for walkthrough. 
+#The auther was much more thorough, and is a much better example of a methods guide
+
+#postive and negative lecicon gathered from https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon
+
+#required packages for enture workload
+library(rCUR)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(SnowballC)
+library(qdap)
+library(twitteR)
+library(slam)
+library(tm)
+library(wordcloud)
+
+#twitter keys 
+
+consumer_key <- "your consumer key"
+consumer_secret <- "your consumer secret"
+access_token <- "your access token"
+access_secret <- "your access secret"
+
+#setup twitter connection "handshake"
+setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+#import positive and negative word dictionaries 
+
+positive=scan('see webpage for access to positive work document')
+negative=scan('see webpage for access to negative work document')
+positive[20:30]
+negative[500:510]
+
+positive=c(positive,"cloud")
+negative=negative[negative!="cloud"]
+
+###scrap twitter
+#finds bearsway tweets by setting object
+findfd <- "Scotrail"
+#set max limit
+number <- 5000
+#scrap twitter
+tweet <- searchTwitter(findfd,number)
+#convert to text 
+tweetT<- lapply(tweet,function(t)t$getText())
+head(tweetT,5)
+
+#error catching function 
+
+tryTolower = function(x)
+{
+  y = NA
+  # tryCatch error
+  try_error = tryCatch(tolower(x), error = function(e) e)
+  # if not an error
+  if (!inherits(try_error, "error"))
+    y = tolower(x)
+  return(y)
+}
+
+#fucntion to removes punctuation, special characters, embedded HTTP links, extra spaces, and digits
+
+clean = function(t){
+  t = gsub('[[:punct:]]','',t)
+  t = gsub('[[:cntrl:]]','',t) 
+  t = gsub('\\d+','',t)
+  t = gsub('[[:digit:]]','',t)
+  t = gsub('@\\w+','',t)
+  t = gsub('http\\w+','',t)
+  t = gsub("^\\s+|\\s+$", "", t)
+  t = sapply(t,function(x) tryTolower(x))
+  t = str_split(t," ")
+  t = unlist(t)
+  return(t)
+}
+
+
+#we apply the clean() function defined above 
+
+tweetclean = lapply(tweetT,function(x) clean(x))
+head(tweetclean,5)
+
+
+###### analysing positive words 
+# a function to count the number of positive and negative 
+
+returnpscore <- function(tweet) {
+  pos.match <- match(tweet,positive)
+  pos.match <- !is.na(pos.match)
+  pos.score <- sum(pos.match)
+  return(pos.score)
+}
+
+#function to the tweetclean list
+
+positive.score <- lapply(tweetclean,function(x) returnpscore(x))
+
+#a loop to count the number of positive words present in the tweets
+
+pcount <- 0
+for (i in 1:length(positive.score)) {
+  pcount<- pcount+positive.score[[i]]
+}
+pcount
+
+#retrieves the positive and negative matching words.
+
+poswords <- function(tweets){
+  pmatch <- match(t,positive)
+  posw <- positive[pmatch]
+  posw <- posw[!is.na(posw)]
+  return(posw)
+}
+
+#a loop is called to add words to a data frame, pdatamart. 
+
+words <- NULL
+pdatamart <- data.frame(words)
+
+for (t in tweetclean) {
+  pdatamart <- c(poswords(t),pdatamart)
+}
+head(pdatamart,10)
+
+ndatamart=function(tweets){
+  nmatch=match(t,negative)
+  negw=negative[pmatch]
+  negw=posw[!is.na(negw)]
+  return(posw)
+}
+
+words=NULL
+pdatamart=data.frame(words)
+
+for (t in tweetclean) {
+  pdatamart=c(poswords(t),pdatamart)
+}
+head(pdatamart,10)
+
+#analysiing negative words 
+#we first define a function to count the number of 
+#positive and negative words
+
+returnnscore <- function(tweet) {
+  neg.match <- match(tweet, negative)
+  neg.match <- !is.na(neg.match)
+  neg.match <- sum(neg.match)
+}
+
+#Next we apply this function to the tweetclean list
+
+negative.score <- lapply(tweetclean, function(x) returnnscore(x))
+
+#Next we define a loop to count the total number of positive words present in the tweets
+
+ncount <- 0
+for (i in 1: length(negative.score)) {
+  ncount <- ncount+negative.score[[i]]
+}
+ncount
+
+#Next we define a loop to count the total number of positive words present in the tweets
+
+
+negwords <- function(tweets) {
+  nmatch <- match(t, negative)
+  negw <- negative[nmatch]
+  negw <- negw[!is.na(negw)]
+  return(negw)
+}
+
+#This function is applied to our tweetclean list and 
+#a loop is called to add words to a data frame, ndatamart. 
+#The code below also shows first 10 matches of negative words
+
+wordsn <- NULL
+ndatamart <- data.frame(wordsn)
+
+for (t in tweetclean) {
+  ndatamart <- c(negwords(t),ndatamart)
+}
+head(ndatamart,10)
+
+
+
+
+########################
+#5.1 Plotting high frequency negative and positive words
+#In this step, we create some charts to show the distribution of high frequency positive and negative words.
+############ this code doens't work   
+  
+#Here we convert the tweetclean into a word corpus 
+
+#write corpus of positive words, remove stop words 
+tweetscorpus=Corpus(VectorSource(pdatamart))
+tweetscorpus=tm_map(tweetscorpus,removeWords,stopwords("english"))
+stopwords("english")[30:50]
+
+#produce wordcloud
+wordcloud(tweetscorpus,scale=c(5,0.5),random.order = TRUE,rot.per = 0.20,use.r.layout = FALSE,colors = brewer.pal(6,"Dark2"),max.words = 300)
+wordcloud()
+
+#write corpus of negative words, remove stop words 
+tweetscorpusNEG=Corpus(VectorSource(ndatamart))
+tweetscorpusNEG=tm_map(tweetscorpusNEG,removeWords,stopwords("english"))
+stopwords("english")[30:50]
+
+#produce wordcloud of negative words 
+wordcloud(tweetscorpusNEG,scale=c(5,0.5),random.order = TRUE,rot.per = 0.20,use.r.layout = FALSE,colors = brewer.pal(6,"Dark2"),max.words = 300)
+wordcloud()
+
+
+# quantifying numbers of positive words in #Scotrail tweets 
+
+tweetscorpus=Corpus(VectorSource(pdatamart))
+tweetscorpus=tm_map(tweetscorpus,removeWords,stopwords("english"))
+stopwords("english")[30:50]
+
+dtm=DocumentTermMatrix(tweetscorpus)
+# #removing sparse terms
+dtms=removeSparseTerms(dtm,.99)
+freq=sort(colSums(as.matrix(dtm)),decreasing=TRUE)
+#get some more frequent terms
+findFreqTerms(dtm,lowfreq=50)
+
+wf=data.frame(word=names(freq),freq=freq)
+wfh=wf%>%
+  filter(freq>=15,!word==tolower(findfd))
+  
+ggplot(wfh,aes(word,freq))+geom_bar(stat="identity",fill='lightblue')+theme_bw()+
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  geom_text(aes(word,freq,label=freq),size=4)+labs(x="High Frequency Words ",
+  y="Number of Occurences", title=paste("High Frequency Positive Words and Occurence in \n '",
+  findfd,"' twitter feeds, n =",number)) +
+  geom_text(aes(1,max(freq)-100,label=paste("# Positive Words:",pcount,"\n","# Negative Words:",ncount,"\n")),size=5, hjust=0)
+
+#quantifying number of negative workds in #scotrail 
+tweetscorpusNEG=Corpus(VectorSource(ndatamart))
+tweetscorpusNEG=tm_map(tweetscorpusNEG,removeWords,stopwords("english"))
+stopwords("english")[30:50]
+
+dtmN=DocumentTermMatrix(tweetscorpusNEG)
+# #removing sparse terms
+dtms=removeSparseTerms(dtmN,.99)
+freq=sort(colSums(as.matrix(dtmN)),decreasing=TRUE)
+#get some more frequent terms
+findFreqTerms(dtmN,lowfreq=50)
+
+wf=data.frame(word=names(freq),freq=freq)
+wfh=wf%>%
+  filter(freq>=20,!word==tolower(findfd))
+  
+ggplot(wfh,aes(word,freq))+geom_bar(stat="identity",fill='lightblue')+theme_bw()+
+theme(axis.text.x=element_text(angle=45,hjust=1))+
+geom_text(aes(word,freq,label=freq),size=4)+labs(x="High Frequency Words ",
+y="Number of Occurences", title=paste("High Frequency Negative Words and Occurence in \n '",
+findfd,"' twitter feeds, n =",number)) + geom_text(aes(1, max(freq), label=paste("# Positive Words:",pcount,
+"\n","# Negative Words:",ncount,"\n")),size=5, hjust = -2, vjust = 1)
