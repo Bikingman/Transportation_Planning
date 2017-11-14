@@ -92,4 +92,14 @@ hist(log(new_distance_household$gdist), main = "Total Travel Distance by Househo
 sorted <- sort(new_distance_household$gdist, decreasing = F)
  
 
-#would you like the data to be ordered, and then placed in to a distgram? 
+#would you like the data to be ordered, and then placed in to a distgram?  
+
+
+
+
+
+
+
+
+
+
