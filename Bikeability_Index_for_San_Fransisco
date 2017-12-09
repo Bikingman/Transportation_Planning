@@ -1,0 +1,43 @@
+
+#building a bikeability index
+library(foreign)
+library(dplyr)
+
+setwd("D://Daniel I//Documents//bikeability index for SF//SF_data//NAD83")
+edges_base <- read.dbf("SF_roads_5.dbf")
+
+edges_base$X10m_roads_[is.na(edges_base$X10m_roads_)] <- 0 
+edges_base$X400m_buf_w[is.na(edges_base$X400m_buf_w)] <- 0 
+edges_base$X400m_sf_ro[is.na(edges_base$X400m_sf_ro)] <- 0 
+edges_base$bike_densi[is.na(edges_base$bike_densi)] <- 0 
+
+edges_base$length_km <- edges_base$length/1000
+
+edges_base$connect <- edges_base$X400m_buf_w/edges_base$length_km
+edges_base$land_use <- edges_base$X400m_sf_ro/edges_base$length_km
+edges_base$BL_dens <- edges_base$bike_densi/edges_base$length_km
+
+edges <- subset(edges_base, select = c(id, connect, land_use, BL_dens, X10m_roads_))
+
+edges$d_connect <- ntile(edges$connect, 10)
+edges$d_land <- ntile(edges$land_use, 10)
+edges$d_slope <- ntile(edges$X10m_roads_, 10)
+edges$d_biDen <- ntile(edges$BL_dens, 10)
+
+edges$d_slope <- ifelse(edges$d_slope == 10, 1, 
+                       ifelse(edges$d_slope == 9, 2, 
+                              ifelse(edges$d_slope == 8, 3, 
+                                     ifelse(edges$d_slope == 7, 4, 
+                                            ifelse(edges$d_slope == 6, 5,
+                                                   ifelse(edges$d_slope == 5, 6, 
+                                                          ifelse(edges$d_slope == 4, 7, 
+                                                                 ifelse(edges$d_slope == 3, 8, 
+                                                                        ifelse(edges$d_slope == 2, 9, 
+                                                                               ifelse(edges$d_slope == 1, 10, 0))))))))))
+
+																			   
+edges$bike_index <- edges$d_slope + edges$d_connect + edges$d_land + (2*edges$d_biDen)
+
+bikeability1 <- subset(edges, select = c(id, bike_index))
+
+write.csv(bikeability1, "SF_bike_index.csv")
