@@ -1,0 +1,70 @@
+library(ggplot2)
+  library(dplyr)
+library(reshape)
+setwd("D:\\Bike Share Analysis\\Nice_ride_data_2015_season\\Nice_ride_data_2015_season")
+#import constructed data
+bikes_hires <- read.csv(("bike_hires_expanded.csv"), sep = ",", header = T)
+#aggregate hires by...
+hires_agg_by_SH_SD_AT <- aggregate(hire ~ Account.type + Start.Hour + Start.Day, data = bikes_hires, FUN = sum)
+#write in hour of week
+hires_agg_by_SH_SD_AT$how <- cumsum(!duplicated(hires_agg_by_SH_SD_AT[2:3]))
+
+#melt out to calc total percent of casuals 
+dcast_the_AT <- dcast(hires_agg_by_SH_SD_AT, 
+                 Start.Day + Start.Hour ~ Account.type, 
+                 value.var = "hire")
+
+#extract only required cols
+dcast_the_AT <- subset(dcast_the_AT, select= c(Start.Day, Start.Hour, Casual, Member))
+
+#duplicate for titling 
+df_with_perc_hires_time <- dcast_the_AT
+
+#calcuate the percent of casuals per 
+df_with_perc_hires_time$cas_percent <- ((df_with_perc_hires_time$Casual)/((df_with_perc_hires_time$Casual)+(df_with_perc_hires_time$Member)))*100
+
+#select data for merge
+merge_data <- df_with_perc_hires_time[c(1,2,5)]
+
+#merge data
+plot_data <- merge(hires_agg_by_SH_SD_AT, merge_data, by = c("Start.Day", "Start.Hour"))
+
+#eliminate unknown members
+plot_data <- subset(plot_data, Account.type != "Unknown")
+
+#plot x (time)
+plot <- ggplot(data = plot_data,
+               aes(x = how)) 
+
+#plot percent casuals
+plot <- plot + geom_ribbon(aes(ymin = 0, ymax = (cas_percent), fill = "% of Hires by Casual Users"), colour = "transparent", alpha = .5) 
+
+#plot hires 
+plot <- plot + geom_line(aes(y = hire/100, colour = Account.type), size = .9)
+
+#colour fpr christmas 
+plot <- plot + scale_colour_manual(values=c("firebrick2", "forestgreen"))
+
+#fill aes 
+plot <- plot +   scale_fill_manual(name = '',  values=c("% of Hires by Casual Users" = "grey")) 
+
+#visualise
+plot 
+
+#add title
+plot <- plot + labs(
+  title = "Who Uses the Twin City Bike Share?", 
+  y = "Hires (100's)",
+  x = "Day of Week")
+
+#adjust x axis 
+plot <- plot + scale_x_continuous(
+  breaks = c(0, 24, 48, 72, 96, 120, 144),
+  label = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) + 
+  theme(axis.text.x = element_text(hjust=-0.05))
+
+#adjust right y axis
+plot <- plot + scale_y_continuous(sec.axis = sec_axis(~.*1, name = "Percent of Hires by Casual Users [%]"))
+
+#visualise
+plot
