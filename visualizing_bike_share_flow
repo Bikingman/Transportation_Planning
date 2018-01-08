@@ -3,7 +3,7 @@
 #visualizing flow of the Twin City Bike Share in R using stplanr
 
 
-#thank you to the stplanr team for making this package aviable, and thank you Prof David McArthur at UoG for showing my this work  
+#thank you to the stplanr team for creating this package, and thank you Prof David McArthur at the UoG for exposing me to this work  
 #https://cran.r-project.org/web/packages/stplanr/vignettes/introducing-stplanr.html
 #https://cran.r-project.org/web/packages/stplanr/stplanr.pdf
 
@@ -48,5 +48,6 @@ OD3 <- OD2[c(1:3, 5:6, 9:10)]
 
 #3. generate text files for each route along osm links 
 #stuck here. need to find a command that will return a string of links in a single cell. These then partitioned and the weights added. 
-# so far the follow commands seem like they will NOT work 
-# 1. viaroutes::stplanr 2. 
+# so far the follow commands seem like they will NOT work # this may not be true, need to better understand stplanr
+# 1. viaroutes::stplanr -
+
