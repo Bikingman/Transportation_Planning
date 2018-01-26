@@ -60,26 +60,7 @@ bikes_hires <- merge(bike_hires, bike_share_loc, by.x = c("End.station.number"),
 
 write.csv(bikes_hires, "bike_hires_expanded.csv")
 
-Hourly_Count_PS <- aggregate(bikes_hires$hire ~ bikes_hires$Start.station + 
-bikes_hires$Latitude.x + bikes_hires$Longitude.x + bikes_hires$Start.station.number + bikes_hires$Start.Hour, 
-data = bike_share_hires, FUN = sum)
 
-Hourly_Count <- aggregate(bikes_hires$hire ~ bikes_hires$Start.station + 
-bikes_hires$Latitude.x + bikes_hires$Longitude.x + bikes_hires$Start.station.number, 
-data = bike_share_hires, FUN = sum)
-
-Hourly_Count_End <- aggregate(bikes_hires$hire ~ bikes_hires$End.station + 
-bikes_hires$Latitude.y + bikes_hires$Longitude.y + bikes_hires$End.station.number, 
-data = bike_share_hires, FUN = sum)
-
-Counts_by_User <- aggregate(bikes_hires$hire ~ bikes_hires$Start.station + 
-bikes_hires$Latitude.x + bikes_hires$Longitude.x + bikes_hires$Start.station.number + bikes_hires$Account.type,
-data = bike_share_hires, FUN = sum)
-
-#reshape for qgis
-Counts_by_User <- reshape(Counts_by_User, idvar = c("bikes_hires$Start.station", "bikes_hires$Longitude.x", "bikes_hires$Latitude.x", "bikes_hires$Start.station.number"), timevar = "bikes_hires$Account.type", direction = "wide")
-
-write.csv(Counts_by_User, "counts_by_accountuser.csv")
 
 
 
