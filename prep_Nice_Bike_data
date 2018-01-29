@@ -1,10 +1,10 @@
-
-
 # this is for anaylsing the Minnapolis Bike Share data 
 
+setwd("D:\\Bike Share Analysis\\MN data\\Station_Locations")
+bike_share_loc <- read.dbf("stations_extended_NAD.dbf")
 setwd("D:\\Bike Share Analysis\\Nice_ride_data_2015_season\\Nice_ride_data_2015_season")
-bike_share_loc <- read.csv("Nice_Ride_2015_station_locations.csv", sep = ",", header = T)
 bike_share_hires <- read.csv("Nice_ride_trip_history_2015_season.csv", sep = ",", header = T)
+
 
 #write in number of hires 
 bike_share_hires$hire <- 1
@@ -12,57 +12,31 @@ bike_share_hires$hire <- 1
 
 
 #add start day code vc 
-bike_share_hires$Start.Day <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$wday
+bike_share_hires$Start.Day <- (as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$wday) + 1 
 
 #add end day code 
-bike_share_hires$End.Day <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$wday
-
-#add start day code vc 
-bike_share_hires$Month.Day.S <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$mday
-
-#add end day code 
-bike_share_hires$Month.Day.E <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$mday
+bike_share_hires$End.Day <- (as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$wday) + 1 
 
 #add start month 
-bike_share_hires$Start.Month <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$mon
+bike_share_hires$Start.Month <- (as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mon) + 1 
 # add end month 
-bike_share_hires$End.Month <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$mon
+bike_share_hires$End.Month <- (as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mon) +1 
 
 #add start month 
-bike_share_hires$Start.Hour <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$hour
+bike_share_hires$Start.Hour <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$hour
 # add end month 
-bike_share_hires$End.Hour <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "UTC")$hour
+bike_share_hires$End.Hour <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$hour
 
 #calc number of minutes 
 bike_share_hires$minutes <- bike_share_hires$Total.duration..Seconds./60
 
-#generating part of day 
-# 1 = morning, 2 = midday, 3 = evening, 4 = night
 
-
-bike_share_hires$part_of_day <- ifelse(bike_share_hires$Start.Hour >= 5 & bike_share_hires$Start.Hour <= 9, 1,
-                                       ifelse(bike_share_hires$Start.Hour >= 10 & bike_share_hires$Start.Hour <= 14, 2, 
-                                              ifelse(bike_share_hires$Start.Hour >= 15 & bike_share_hires$Start.Hour <= 19, 3, 
-                                                     ifelse(bike_share_hires$Start.Hour >= 20 & bike_share_hires$Start.Hour <= 24, 4, 
-                                                            ifelse(bike_share_hires$Shart.Hour <= 4, 4, 0)))))
-                                       
-#part of day 2, afternoon = 0, morning = 1
-bike_share_hires$mor_aft <- ifelse(bike_share_hires$Start.Hour <= 11 | bike_share_hires$Start.Hour == 24, 1, 0)
-
-#commute = 1, non commute = 0
-bike_share_hires$commute <- ifelse(bike_share_hires$Start.Hour >= 6 & bike_share_hires$Start.Hour <= 9, 1, 
-ifelse(bike_share_hires$Start.Hour >= 16 & bike_share_hires$Start.Hour <= 19, 1, 0))
-
-#chop up by hour/station 
+bike_share_hires$season <- ifelse(bike_share_hires$Start.Month == 1 | bike_share_hires$Start.Month == 2 | bike_share_hires$Start.Month == 12, 1,
+                                  ifelse(bike_share_hires$Start.Month >= 3 & bike_share_hires$Start.Month <= 5, 2, 
+                                         ifelse(bike_share_hires$Start.Month >= 6 & bike_share_hires$Start.Month <= 8, 3, 
+                                                ifelse(bike_share_hires$Start.Month >= 9 & bike_share_hires$Start.Month <= 11, 4, 0))))
 
 bikes_hires <- merge(bike_share_hires, bike_share_loc, by.x = c("Start.station.number"), by.y = c("Terminal"), all = T)
-bikes_hires <- merge(bike_hires, bike_share_loc, by.x = c("End.station.number"), by.y = c("Terminal"), all = T)
+bikes_hires <- merge(bikes_hires, bike_share_loc, by.x = c("End.station.number"), by.y = c("Terminal"), all = T)
 
 write.csv(bikes_hires, "bike_hires_expanded.csv")
-
-
-
-
-
-
-
