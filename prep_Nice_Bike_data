@@ -2,6 +2,13 @@
 
 setwd("D:\\Bike Share Analysis\\MN data\\Station_Locations")
 bike_share_loc <- read.dbf("stations_extended_NAD.dbf")
+
+bike_share_loc$buses <- ifelse(bike_share_loc$bus >= 1, 1, 0)
+bike_share_loc$l_rail <- ifelse(bike_share_loc$rail >= 1, 1, 0)
+bike_share_loc$park <- ifelse(bike_share_loc$pparks >= 1, 1, 0)
+
+bike_share_loc <- bike_share_loc[c(1,3:7, 12:15)]
+
 setwd("D:\\Bike Share Analysis\\Nice_ride_data_2015_season\\Nice_ride_data_2015_season")
 bike_share_hires <- read.csv("Nice_ride_trip_history_2015_season.csv", sep = ",", header = T)
 
@@ -9,12 +16,18 @@ bike_share_hires <- read.csv("Nice_ride_trip_history_2015_season.csv", sep = ","
 #write in number of hires 
 bike_share_hires$hire <- 1
 
+#day of year
+bike_share_hires$epochSday <- Month.Day.S <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$yday
+
+#day of year
+bike_share_hires$epochEday <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$yday
+
 #add start day code vc 
 bike_share_hires$Month.Day.S <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mday
 
 #add end day code 
 bike_share_hires$Month.Day.E <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mday
-
+$yday
 #add start day code vc 
 bike_share_hires$Start.Day <- (as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$wday) + 1 
 
@@ -34,6 +47,8 @@ bike_share_hires$End.Hour <- as.POSIXlt(bike_share_hires$End.date, format = "%m/
 #calc number of minutes 
 bike_share_hires$minutes <- bike_share_hires$Total.duration..Seconds./60
 
+#reduce bus to 1
+bike_share_hires$bus <- 
 
 bike_share_hires$season <- ifelse(bike_share_hires$Start.Month == 1, 1, 
                                   ifelse(bike_share_hires$Start.Month == 2, 1, 
@@ -46,6 +61,3 @@ bikes_hires <- merge(bike_share_hires, bike_share_loc, by.x = c("Start.station.n
 bikes_hires <- merge(bikes_hires, bike_share_loc, by.x = c("End.station.number"), by.y = c("Terminal"), all = T)
 
 write.csv(bikes_hires, "bike_hires_expanded.csv")
-
-
-
