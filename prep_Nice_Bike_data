@@ -27,7 +27,7 @@ bike_share_hires$Month.Day.S <- as.POSIXlt(bike_share_hires$Start.date, format =
 
 #add end day code 
 bike_share_hires$Month.Day.E <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mday
-$yday
+
 #add start day code vc 
 bike_share_hires$Start.Day <- (as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$wday) + 1 
 
