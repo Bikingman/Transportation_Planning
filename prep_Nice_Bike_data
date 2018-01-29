@@ -9,7 +9,11 @@ bike_share_hires <- read.csv("Nice_ride_trip_history_2015_season.csv", sep = ","
 #write in number of hires 
 bike_share_hires$hire <- 1
 
+#add start day code vc 
+bike_share_hires$Month.Day.S <- as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mday
 
+#add end day code 
+bike_share_hires$Month.Day.E <- as.POSIXlt(bike_share_hires$End.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$mday
 
 #add start day code vc 
 bike_share_hires$Start.Day <- (as.POSIXlt(bike_share_hires$Start.date, format = "%m/%d/%Y %H:%M", tz = "America/Chicago")$wday) + 1 
@@ -31,12 +35,17 @@ bike_share_hires$End.Hour <- as.POSIXlt(bike_share_hires$End.date, format = "%m/
 bike_share_hires$minutes <- bike_share_hires$Total.duration..Seconds./60
 
 
-bike_share_hires$season <- ifelse(bike_share_hires$Start.Month == 1 | bike_share_hires$Start.Month == 2 | bike_share_hires$Start.Month == 12, 1,
-                                  ifelse(bike_share_hires$Start.Month >= 3 & bike_share_hires$Start.Month <= 5, 2, 
-                                         ifelse(bike_share_hires$Start.Month >= 6 & bike_share_hires$Start.Month <= 8, 3, 
-                                                ifelse(bike_share_hires$Start.Month >= 9 & bike_share_hires$Start.Month <= 11, 4, 0))))
+bike_share_hires$season <- ifelse(bike_share_hires$Start.Month == 1, 1, 
+                                  ifelse(bike_share_hires$Start.Month == 2, 1, 
+                                         ifelse(bike_share_hires$Start.Month == 12, 1,
+                                                ifelse(bike_share_hires$Start.Month >= 3 & bike_share_hires$Start.Month <= 5, 2, 
+                                                       ifelse(bike_share_hires$Start.Month >= 6 & bike_share_hires$Start.Month <= 8, 3, 
+                                                              ifelse(bike_share_hires$Start.Month >= 9 & bike_share_hires$Start.Month <= 11, 4, 0))))))
 
 bikes_hires <- merge(bike_share_hires, bike_share_loc, by.x = c("Start.station.number"), by.y = c("Terminal"), all = T)
 bikes_hires <- merge(bikes_hires, bike_share_loc, by.x = c("End.station.number"), by.y = c("Terminal"), all = T)
 
 write.csv(bikes_hires, "bike_hires_expanded.csv")
+
+
+
