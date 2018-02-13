@@ -57,7 +57,7 @@ bike_share_hires <- read.csv("Nice_ride_trip_history_2015_season.csv", sep = ","
 
 
 bike_share_hires$hire <- 1 # add a number to aggregate
-flow <- aggregate(hire ~ End.station.number + Start.station.number, data = bike_share_hires, FUN = sum)
+flow <- aggregate(hire ~ Start.station.number + End.station.number, data = bike_share_hires, FUN = sum)
 ind <- which(with( flow, End.station.number == "NRHQ" | Start.station.number == "NRHQ" )) # remove NRHQ bc no coordinates for location 
 ind # make sure 
 f <- flow[ -ind, ] # remove from flow 
@@ -74,7 +74,7 @@ qtm(l, lines.lwd = "hire", scale = 2)
 
 curl::has_internet()
   
-r = line2route(l, route_fun = route_osrm)
+r = line2route(l, route_fun = route_graphhopper, vehicle = "bike)
 
 r@data = cbind(r@data, l@data)
 tm_shape(r) + tm_lines(lwd = "hire", scale = 3, col = "dodgerblue1")
