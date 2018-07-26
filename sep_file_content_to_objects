@@ -1,0 +1,25 @@
+library(ggplot2)
+library(dplyr)
+library(stplanr)
+library(foreign)
+
+setwd("...")
+
+a <- read.csv("...", header=TRUE, sep=",")
+
+#seperates by day type and creates a new object
+for(i in unique(a$Day.Type)) {
+  nam <- paste("SV", i, sep = ".")
+  assign(nam, a[a$Day.Type==i,])
+}
+
+
+#seperates average weeekly by part of day for average weekday trips
+for(i in unique(`SV.1: Average Weekday (Tu-Th)`$Day.Part)) {
+  nam <- paste("DP1", i, sep = ".")
+  assign(nam, `SV.1: Average Weekday (Tu-Th)`[`SV.1: Average Weekday (Tu-Th)`$Day.Part==i,])
+}
+
+
+
+setwd("...")
