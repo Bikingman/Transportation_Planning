@@ -1,0 +1,66 @@
+library(dplyr)
+library(ggplot2)
+library(reshape)
+library(stplanr)
+library(tmap)
+
+library(tidyverse)
+
+
+
+path <- "..."
+filenames <- list.files(path, pattern="*.csv", full.names=T)
+filelist <- lapply(filenames, read.csv)
+#don't need this, but made it easier for me to read
+names(filelist) <-substr(filenames, 60, 90)
+
+#aggregate the trips with this function, creates another list 
+b <- lapply(filelist, function(x) aggregate(factored_trips ~ ORIGIN_ZIP, data = x, FUN = sum)) 
+
+#rename the dataframes within list, ensure order of new names corresponds with your data
+names(b) <- c("1_wday_daily_factrips_by_origin_zipcodes", 
+              "2_weay_AMpeak_factrips_by_origin_zipcodes", 
+              "3_wday_midday_factrips_by_origin_zipcodes", 
+              "4_wday_PMpeak_factrips_by_origin_zipcodes", 
+              "5_wday_evening_factrips_by_origin_zipcodes", 
+              "6_wend_daily_factrips_by_origin_zipcodes")
+
+#set word directory 
+setwd("...")
+
+#look to write files 
+for (i in seq_along(b)) {
+  filename = paste(names(b)[i], ".csv")
+  write.csv(b[[i]], filename)
+}
+
+#invisible(lapply(b, function(i){out <- capture.output(print(i));cat(out,sep="\n",file="all_data_summary.txt",append=TRUE)}) -> .ans
+          #invisible(lapply(b, function(x) write.table( data.frame(x), 'new.csv'  , append= T, sep=',' )))
+
+#if you need the files in global environment 
+#note the invisible function keeps lapply from spitting out the data.frames to the console
+#invisible(lapply(names(filelist), function(x) assign(x,filelist[[x]],envir=.GlobalEnv)))
+
+          
+############# factored trips by destination zipcode 
+
+#aggregate the trips with this function, creates another list 
+d <- lapply(filelist,function(x) aggregate(factored_trips ~ DESTINATION_ZIP, data = x, FUN = sum)) 
+
+#rename the dataframes within list, ensure order of new names corresponds with your data
+names(d) <- c("1_wday_daily_factrips_by_dest_zip", 
+              "2_weay_AMpeak_factrips_by_dest_zip", 
+              "3_wday_midday_factrips_by_dest_zip", 
+              "4_wday_PMpeak_factrips_by_dest_zip", 
+              "5_wday_evening_factrips_by_dest_zip", 
+              "6_wend_daily_factrips_by_dest_zip")
+
+#set word directory 
+setwd("...")
+
+#look to write files 
+for (i in seq_along(d)) {
+  filename = paste(names(d)[i], ".csv")
+  write.csv(d[[i]], filename)
+}
+
