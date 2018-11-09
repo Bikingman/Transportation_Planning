@@ -29,3 +29,77 @@
 
 	// return node, ways, relations as determined above
 	out geom meta;
+
+
+
+
+
+
+
+
+
+
+// locate multiple ammenties
+
+[out:json][timeout:25000];
+// gather results
+(
+  // query part for: “amenity=drinking_water”
+  node["amenity"="cafe"]({{bbox}});
+  node["amenity"="restaurant"]({{bbox}});
+  node["amenity"="pub"]({{bbox}});
+  node["amenity"="coffee"]({{bbox}});
+  node["building"="university"]({{bbox}});
+  node["building"="college"]({{bbox}});
+  node["office"]({{bbox}});
+  
+);
+// print results
+out meta;
+>;
+
+
+
+
+
+
+
+
+
+
+
+//locate highways (roads without ped access)
+
+<osm-script output="json" timeout="25">
+  <!-- gather results -->
+  <union>
+    <!-- query part for: “highway=* and highway!=footway and highway!=pedestrian and "-highway"!=path” -->
+    <query type="node">
+      <has-kv k="highway"/>
+      <has-kv k="highway" modv="not" v="footway"/>
+      <has-kv k="highway" modv="not" v="pedestrian"/>
+      <has-kv k="-highway" modv="not" v="path"/>
+      <bbox-query {{bbox}}/>
+    </query>
+    <query type="way">
+      <has-kv k="highway"/>
+      <has-kv k="highway" modv="not" v="footway"/>
+      <has-kv k="highway" modv="not" v="pedestrian"/>
+      <has-kv k="-highway" modv="not" v="path"/>
+      <bbox-query {{bbox}}/>
+    </query>
+    <query type="relation">
+      <has-kv k="highway"/>
+      <has-kv k="highway" modv="not" v="footway"/>
+      <has-kv k="highway" modv="not" v="pedestrian"/>
+      <has-kv k="-highway" modv="not" v="path"/>
+      <bbox-query {{bbox}}/>
+    </query>
+  </union>
+  <!-- print results -->
+  <print mode="body"/>
+  <recurse type="down"/>
+  <print mode="skeleton" order="quadtile"/>
+</osm-script>
+
+
