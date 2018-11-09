@@ -1,7 +1,4 @@
 
-
-#Generating choroplethr maps of counties in the USA 
-
 setwd("D:\\Learn D3\\Data\\Bike Share\\NYC\\201804-citibike-tripdata.csv")
 data <- read.csv("201804-citibike-tripdata.csv", sep = ',', header = T)
 
