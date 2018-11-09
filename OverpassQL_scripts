@@ -1,0 +1,31 @@
+//subway stations with 400m of bike lanes
+
+[out:json][bbox:{{bbox}}][timeout:800];
+
+	// determine set of train stations near cyclelanes
+	(
+	  // get cycle route relatoins
+	  relation[route=bicycle];
+	  way[highway=cycleway];
+	  way[highway=path][bicycle=designated]
+	)->.cycleways; // put them into the set "cycleways"
+	 
+	// determine set of stations
+	(
+	  node["station"="subway"];
+	  way["station"="subway"];
+	  relation["station"="subway"]
+	)->.stations; // put them into the set "stations"
+	  
+	// determine set of stations near cycleways
+	(
+	  node.stations(around.cycleways:400);
+	  way.stations(around.cycleways:400);
+	  rel.stations(around.cycleways:400);
+	)->.stationsNearcycleways; // put them into the set "stationsNearcycleways"
+
+	// determine stations near cycleways
+	(.stationsNearcycleways;);
+
+	// return node, ways, relations as determined above
+	out geom meta;
