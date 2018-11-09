@@ -1,0 +1,18 @@
+/*
+THis is an OverpassQL for extracting cyclist destination sites
+*/
+[out:json][timeout:25000];
+// gather results
+(
+  node["amenity"="cafe"]({{bbox}});
+  node["amenity"="restaurant"]({{bbox}});
+  node["amenity"="pub"]({{bbox}});
+  node["amenity"="coffee"]({{bbox}});
+  node["building"="university"]({{bbox}});
+  node["building"="college"]({{bbox}});
+  node["office"]({{bbox}});
+  
+);
+// print results
+out meta;
+>;
