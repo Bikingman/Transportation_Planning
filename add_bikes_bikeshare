@@ -49,11 +49,9 @@ distribution_list <- morning_hires[1:40,]
 distribution_list$perc <- distribution_list$hire/sum(distribution_list$hire)
 distribution_list$bike_count <- round(distribution_list$perc*200)
 distribution_list <- subset(distribution_list, bike_count > 0)
-
-#export list 
-distribution_list <- subset(morning_hires, select = c(Start_station, dist_count))
-
-
+morning_hires2 <- aggregate(hire ~ start.station.latitude + start.station.longitude + start.station.name, data = morning, FUN = sum)
+distribution_list <- merge(distribution_list, morning_hires2,  by = c("start.station.latitude", "start.station.longitude"), all.x = T, all.y =F)
+final_list <- subset(distribution_list, select = c("start.station.name", "bike_count"))
 
 library(sp)
 library(tmap)
@@ -73,5 +71,6 @@ qtm(distribution_spatial, text = "bike_count", dots.col = "bike_count", title = 
 
 #aggregate by locations evening
 evening_hires <- aggregate(hire ~ start.station.latitude + start.station.longitude, data = evening, FUN = sum)
+
 
 
