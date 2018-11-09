@@ -1,0 +1,77 @@
+
+
+#Generating choroplethr maps of counties in the USA 
+
+setwd("D:\\Learn D3\\Data\\Bike Share\\NYC\\201804-citibike-tripdata.csv")
+data <- read.csv("201804-citibike-tripdata.csv", sep = ',', header = T)
+
+
+#write in number of hires 
+data$hire <- 1
+
+#Hire day
+#note, don't put c() around formating when dealing with one format type. Otherwise
+#you'll end up with NAs ever other row. 
+data$day <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$mday
+
+#hour of day
+data$hour <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$hour
+
+#day of week
+data$weekday <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$wday
+
+#extract weekdays
+data <- subset(data, weekday > 0 & weekday < 7)
+
+#is morning
+data$morning <- ifelse(data$hour >= 6 | data$hour >= 9, 1, 0)
+
+#is evening
+data$evening <- ifelse(data$hour >= 15 | data$hour <= 18, 1, 0)
+
+#get morning data
+morning <- subset(data, morning == 1)
+
+#get evening data
+evening <- subset(data, evening == 1)
+
+#aggregate by location 
+morning_hires <- aggregate(hire ~ start.station.latitude + start.station.longitude, data = morning, FUN = sum)
+
+morning_hires <- subset(morning_hires, start.station.latitude < 45.50636)
+
+write.csv(morning_hires, "morning_hires.csv")
+
+#get precentage
+morning_hires$perc <- morning_hires$hire*10000/sum(morning_hires$hire)
+morning_hires <- morning_hires[order(-morning_hires$perc),] 
+distribution_list <- morning_hires[1:40,]
+distribution_list$perc <- distribution_list$hire/sum(distribution_list$hire)
+distribution_list$bike_count <- round(distribution_list$perc*200)
+distribution_list <- subset(distribution_list, bike_count > 0)
+
+#export list 
+distribution_list <- subset(morning_hires, select = c(Start_station, dist_count))
+
+
+
+library(sp)
+library(tmap)
+
+tmap_mode("view")
+
+pts <- morning_hires[,c(2:1)]
+morning_spatial <- SpatialPointsDataFrame(pts, data = morning_hires,   
+                                          proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+qtm(morning_spatial, dots.col = "hire", title = "Popularity of bike hires by station (April 2018)")
+
+pts1 <- distribution_list[,c(2:1)]
+distribution_spatial <- SpatialPointsDataFrame(pts1, data = distribution_list,
+                                               proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+qtm(distribution_spatial, text = "bike_count", dots.col = "bike_count", title = "Distribution of Bikes")
+
+
+#aggregate by locations evening
+evening_hires <- aggregate(hire ~ start.station.latitude + start.station.longitude, data = evening, FUN = sum)
+
+
