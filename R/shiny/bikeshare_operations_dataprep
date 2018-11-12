@@ -5,7 +5,6 @@
 setwd("D:\\Learn D3\\Data\\Bike Share\\NYC\\201804-citibike-tripdata.csv")
 data <- read.csv("201804-citibike-tripdata.csv", sep = ',', header = T)
 
-
 #write in number of hires 
 data$hire <- 1
 
@@ -36,4 +35,22 @@ morning <- subset(data, morning == 1)
 evening <- subset(data, evening == 1)
 
 #aggregate by location 
-morning_hires <- aggregate(hire ~ start.station.latitude + start.station.longitude, data = morning, FUN = sum)
+morning_hires <- aggregate(hire ~ start.station.id + start.station.latitude + start.station.longitude, data = morning, FUN = sum)
+
+morning_hires <- morning_hires[order(-morning_hires$hire),] 
+#get unique id names to merge with morning hires
+ids <- unique(subset(data, select = c(start.station.id, start.station.name)))
+morning_hires2 <- merge(morning_hires, ids, by = "start.station.id", all.x = T, all.y = F)
+
+distribution_list <- morning_hires2[1:40,]
+distribution_list$perc <- distribution_list$hire/sum(distribution_list$hire)
+distribution_list$bike_count <- round(distribution_list$perc*100,0)
+distribution_list <- subset(distribution_list, bike_count > 0)
+distribution_list <- distribution_list[order(-distribution_list$bike_count),] 
+
+final_list <- subset(distribution_list, select = c("start.station.name", "bike_count"))
+
+
+write.csv(final_list, "final_list.csv")
+write.csv(morning_hires2, "morning_list2.csv")
+write.csv(distribution_list, "distribution_list.csv")
