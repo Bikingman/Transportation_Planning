@@ -1,19 +1,9 @@
+#Twitter Scraping
 
-######TWITTER SCRAPING######
-
-
-#########WORKFLOW###########
-######SET UP HANDSHAKE######
-###EXTRAT SCOTRAIL TWEEKS###
-########CLEAN DATA##########
-######CREATE WORDCLOUD######
-####CREATE HISTOGRAMS#######
-
-
-#mostly gathered from https://rpubs.com/abNY2015/90345 - please refer to this document for walkthrough. 
-#The auther was much more thorough, and is a much better example of a methods guide
+#Developed using original script from https://rpubs.com/abNY2015/90345 
 
 #postive and negative lecicon gathered from https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon
+#thinking ahead - could use a transport specific leci
 
 #required packages for enture workload
 library(rCUR)
