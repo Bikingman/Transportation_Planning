@@ -1,0 +1,39 @@
+
+
+#Generating choroplethr maps of counties in the USA 
+
+setwd("D:\\Learn D3\\Data\\Bike Share\\NYC\\201804-citibike-tripdata.csv")
+data <- read.csv("201804-citibike-tripdata.csv", sep = ',', header = T)
+
+
+#write in number of hires 
+data$hire <- 1
+
+#Hire day
+#note, don't put c() around formating when dealing with one format type. Otherwise
+#you'll end up with NAs ever other row. 
+data$day <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$mday
+
+#hour of day
+data$hour <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$hour
+
+#day of week
+data$weekday <- as.POSIXlt(data$starttime, format = "%Y-%m-%d %H:%M:%S", tz = "EST")$wday
+
+#extract weekdays
+data <- subset(data, weekday > 0 & weekday < 7)
+
+#is morning
+data$morning <- ifelse(data$hour >= 6 | data$hour >= 9, 1, 0)
+
+#is evening
+data$evening <- ifelse(data$hour >= 15 | data$hour <= 18, 1, 0)
+
+#get morning data
+morning <- subset(data, morning == 1)
+
+#get evening data
+evening <- subset(data, evening == 1)
+
+#aggregate by location 
+morning_hires <- aggregate(hire ~ start.station.latitude + start.station.longitude, data = morning, FUN = sum)
