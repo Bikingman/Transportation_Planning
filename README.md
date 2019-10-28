@@ -4,3 +4,5 @@
  - General data preparation. 
  - Sentiment analysis using Twitter scraping. 
  - Overpass QL scripts (would love to do something more with theses) 
+ - Shiny application for managing bike share distribution operations 
+ - Shiny application for exploring Boston's Bluebikes Bike Share data
