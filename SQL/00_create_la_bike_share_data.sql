@@ -1,9 +1,7 @@
---https://stackoverflow.com/questions/10621897/replace-empty-strings-with-null-values
-SELECT f_empty2null('routing."metro-bike-share-trip-data"');
 
 
-DROP TABLE IF EXISTS la_bikeshare_trips_2019;
-CREATE TABLE la_bikeshare_trips_2019 AS (
+DROP TABLE IF EXISTS routing.la_bikeshare_trips_2019;
+CREATE TABLE routing.la_bikeshare_trips_2019 AS (
 SELECT
 id::INT as p_key,
 "Trip ID"::INT as trip_id,
@@ -32,26 +30,32 @@ NULL::geometry(point, 4326) as geom_start,
 NULL::geometry(point, 4326) as geom_end
 	FROM routing."metro-bike-share-trip-data");
 
-ALTER TABLE la_bikeshare_trips_2019
+ALTER TABLE routing.la_bikeshare_trips_2019
 ADD PRIMARY KEY (p_key);
 
-UPDATE la_bikeshare_trips_2019
-set geom_start = ST_SetSRID(ST_MAKEPOINT(start_station_lat, start_station_lon), 4326),
-geom_end = ST_SETSRID(ST_MAKEPOINT(end_station_lat, end_station_lon), 4326);
+UPDATE routing.la_bikeshare_trips_2019
+set geom_start = ST_SetSRID(ST_MAKEPOINT(start_station_lon, start_station_lat), 4326),
+geom_end = ST_SETSRID(ST_MAKEPOINT(end_station_lon, end_station_lat), 4326);
+
+
+
+ALTER TABLE routing.la_bikeshare_trips_2019
+ ALTER COLUMN geom_start TYPE geometry(Point,4326)
+  USING ST_SetSRID(geom_start,4326);
+
+	ALTER TABLE routing.la_bikeshare_trips_2019
+ ALTER COLUMN geom_end TYPE geometry(Point,4326)
+  USING ST_SetSRID(geom_end,4326);
+
 
 CREATE INDEX la_bikeshare_index_start
-on la_bikeshare_trips_2019
+on routing.la_bikeshare_trips_2019
 USING GIST (geom_start);
 
 CREATE INDEX la_bikeshare_index_end
-on la_bikeshare_trips_2019
+on routing.la_bikeshare_trips_2019
 USING GIST (geom_end);
 
-
-
-SELECT seq, edge, rpad(b.the_geom::text,60,' ') AS "the_geom (truncated)"
-        FROM pgr_dijkstra('
-                SELECT gid as id, source, target,
-                        length as cost FROM ways',
-                100, 600, false
-        ) a INNER JOIN ways b ON (a.edge = b.gid) ORDER BY seq;
+--TODO: route all trips, study the xml file and what that does to routing
+--also may want to bring in bike share station points and join counts... or create clustered points
+-- 
