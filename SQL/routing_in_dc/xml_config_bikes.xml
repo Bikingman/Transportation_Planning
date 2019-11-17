@@ -52,6 +52,8 @@
     <tag_value name="secondary" priority="3.0" id="515" />
     <tag_value name="primary_link" priority="3.5" id="516" />
     <tag_value name="primary" priority="3.5" id="517" />
+    <tag_value name="trunk" priority="3.5" id="518" />
+    <tag_value name="trunk_link" priority="3.5" id="519" />
     <tag_value name="road" priority="4.0" id="500" />
   </tag_name>
   <tag_name name="junction" id="6">

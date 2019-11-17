@@ -1,5 +1,0 @@
-
-
-bzcat /Users/Bikingman/Documents/osm_data/socal.osm.bz2 > /tmp/solcal.osm
-osm2pgrouting -f /tmp/solcal.osm -h localhost -U postgres -d postgres -p 5432 -W user --conf=/Users/Bikingman/Documents/GitHub/Transportation_Planning/SQL/xml_config_bikes.xml
-rm /tmp/solcal.osm

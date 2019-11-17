@@ -1,4 +1,6 @@
 
+-- data from
+-- https://www.kaggle.com/cityofLA/los-angeles-metro-bike-share-trip-data/data
 
 DROP TABLE IF EXISTS routing.la_bikeshare_trips_2019;
 CREATE TABLE routing.la_bikeshare_trips_2019 AS (
@@ -58,4 +60,4 @@ USING GIST (geom_end);
 
 --TODO: route all trips, study the xml file and what that does to routing
 --also may want to bring in bike share station points and join counts... or create clustered points
--- 
+--

@@ -1,0 +1,7 @@
+
+
+
+
+bzcat /Users/Bikingman/Documents/osm_data/socal.osm.bz2 > /Users/Bikingman/Documents/osm_data/socal.osm
+osm2pgrouting -f /Users/Bikingman/Documents/osm_data/socal.osm -h localhost -U postgres -d routing --schema la_routing --prefix la_ --suffix _bike_config -p 5432 -W user --conf=/Users/Bikingman/Documents/GitHub/Transportation_Planning/SQL/routing_in_la/xml_config_bikes.xml
+rm /Users/Bikingman/Documents/socal.osm
