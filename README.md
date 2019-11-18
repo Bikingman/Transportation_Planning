@@ -7,7 +7,7 @@
  - Shiny application for managing bike share distribution operations 
  - Shiny application for exploring Boston's Bluebikes Bike Share data
  - general routing functions using postgis/pgrouting
-   - network configurationo
+   - network configuration
    - shortest path between origin/destination
    - measures of centrality
    - travel sheds (not really working)
