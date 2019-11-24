@@ -41,6 +41,7 @@ CREATE TABLE dc_routing.cabi_trips_short AS (
   -- NULL::INT as source_point,
   -- NULL::INT as target_point
   -- FROM dc_routing."201909-capitalbikeshare-tripdata"
+	LIMIT 15000
 );
 
 UPDATE dc_routing.cabi_trips_short gg
