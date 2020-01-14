@@ -21,8 +21,11 @@
 out body;
 >;
 out skel qt;   
-      
+
+
+//fine_gravel roads 
 [out:json][timeout:2500];    
+(
   way
   	["surface"="fine_gravel"]
       ["highway"!="footway"]
@@ -37,12 +40,15 @@ out skel qt;
   	["surface"="fine_gravel"]
       	["highway"!="footway"]
   	  	["highway"!="path"]
-       		({{bbox}});          
+       		({{bbox}});     
+);
 out body;
 >;
 out skel qt;
-    
+
+//gravel
 [out:json][timeout:2500];   
+(
   way	
   	["surface"="gravel"]
       	["highway"!="footway"]
@@ -58,12 +64,15 @@ out skel qt;
   	["surface"="gravel"]
       	["highway"!="footway"]
   		["highway"!="path"]
-    		({{bbox}});   
+    		({{bbox}});
+);        
 out body;
 >;
 out skel qt;      
-        
-[out:json][timeout:2500];     
+
+//peddblestone
+[out:json][timeout:2500];  
+(
   way
   	["surface"="pebblestone"]
       	["highway"!="footway"]
@@ -79,11 +88,14 @@ out skel qt;
       	["highway"!="footway"]
     		["highway"!="path"]
       		({{bbox}});
+);
 out body;
 >;
 out skel qt;     
-        
+
+//grass_paver
 [out:json][timeout:2500];   
+(
   way
   	["surface"="grass_paver"]
      	["highway"!="footway"]
@@ -99,14 +111,18 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});          
+);
 out body;
 >;
 out skel qt;      
 
+
+//dirt surface
 [out:json][timeout:2500];    
+(
   way
   	["surface"="dirt"]
-      	["highway"!="footway"]
+      ["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
   relation
@@ -119,11 +135,15 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;     
-        
+
+
+//earth surface
 [out:json][timeout:2500];   
+(
   way
   	["surface"="earth"]
      	["highway"!="footway"]
@@ -139,11 +159,15 @@ out skel qt;
      	["highway"!="footway"]
  	  	["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
 
-[out:json][timeout:2500];    
+
+//mud road
+[out:json][timeout:2500];   
+(
   way
   	["surface"="mud"]
      	["highway"!="footway"]
@@ -159,11 +183,15 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
 
-[out:json][timeout:2500];      
+
+//sand road
+[out:json][timeout:2500];  
+(
   way
   	["surface"="sand"]
      	["highway"!="footway"]
@@ -179,11 +207,15 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
 
-[out:json][timeout:2500];     
+
+//ground road
+[out:json][timeout:2500];   
+(
   way
   	["surface"="ground"]
      	["highway"!="footway"]
@@ -199,11 +231,15 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
 
-[out:json][timeout:2500];      
+
+//unpaved road
+[out:json][timeout:2500];   
+(
   way
   	["surface"="unpaved"]
      	["highway"!="footway"]
@@ -219,11 +255,20 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
-  
-[out:json][timeout:2500];     
+
+
+//grade5
+[out:json][timeout:2500];  
+(
+  node
+  	["tracktype"="grade5"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
   way
   	["tracktype"="grade5"]
      	["highway"!="footway"]
@@ -234,36 +279,39 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
-  node
-  	["tracktype"="grade5"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-    		({{bbox}});
+);
 out body;
 >;
 out skel qt;    
-   
+
+
+//grade4 road 
+[out:json][timeout:2500]; 
+(
+  way
+  	["tracktype"="grade4"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+  relation
+  	["tracktype"="grade4"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+  node
+  	["tracktype"="grade4"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+);
+out body;
+>;
+out skel qt;
+
+
+//grade3 road 
 [out:json][timeout:2500];    
-  way
-  	["tracktype"="grade4"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-    		({{bbox}});
-  relation
-  	["tracktype"="grade4"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-    		({{bbox}});
-  node
-  	["tracktype"="grade4"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-    		({{bbox}});
-out body;
->;
-out skel qt;
-
-[out:json][timeout:2500];     
+(
   way
   	["tracktype"="grade3"]
      	["highway"!="footway"]
@@ -279,62 +327,56 @@ out skel qt;
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
 
+//grade2 road 
+[out:json][timeout:2500]; 
+(
+  way
+  	["tracktype"="grade2"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+  relation
+  	["tracktype"="grade2"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+  node
+  	["tracktype"="grade2"]
+     	["highway"!="footway"]
+  		["highway"!="path"]
+    		({{bbox}});
+);
+out body;
+>;
+out skel qt;
+
+
+//grade1 road 
 [out:json][timeout:2500];    
+(
   way
-  	["highway"!="footway"]
+  	["tracktype"="grade1"]
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
   relation
-  	["highway"!="footway"]
+  	["tracktype"="grade1"]
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
   node
-  	["highway"!="footway"]
+  	["tracktype"="grade1"]
      	["highway"!="footway"]
   		["highway"!="path"]
     		({{bbox}});
+);
 out body;
 >;
 out skel qt;
-
-[out:json][timeout:2500];  
-  way
-  	["highway"!="path"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-  		({{bbox}});
-  relation
-  	["highway"!="path"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-  		({{bbox}});
-  relation
-  	["highway"!="path"]
-     	["highway"!="footway"]
-  		["highway"!="path"]
-  		({{bbox}});
-out body;
->;
-out skel qt;     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
