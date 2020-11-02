@@ -14,8 +14,7 @@ library(DT)
 library(ggplot2)
 
 source("reload_dashboard.R")
-source("observe_csv.R")
-source("get_extension.R")
+source("observe_file.R")
 
 ui <- dashboardPage(
     dashboardHeader(title = "Basic dashboard to explore data"),
@@ -114,12 +113,12 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
     options(shiny.maxRequestSize = 300*1024^2) 
-
+  
     #prep input data, i.e. load data 
     observeEvent(input$load_data, {
         which_data <- input$datatype
         if (which_data == 'csv') {
-          observe_csv(session, input, output)
+          observe_file(session, input, output, file_type = which_data, input_type = input$csv)
         }
     })
     
