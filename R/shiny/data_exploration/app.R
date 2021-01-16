@@ -29,54 +29,52 @@ ui <- dashboardPage(
         tabItems(
             # First tab content
             tabItem(tabName = "dashboard",
+                    
                     fluidRow(
+                      column(12,
                       box(title = "Data Selector",
-                      div(style = "padding-left: 10px;",
-                          selectInput(inputId = "data_selected",
-                                      label = 'Load your data and select the dataset to review below.',
-                                      choices = c("Upload your data")),
-                      ),
-                      width = 12
-                      )
-                    ),
+                          div(style = "padding-left: 10px;",
+                            selectInput(inputId = "data_selected",
+                                        label = 'Load your data and select the dataset to review below.',
+                                        choices = c("Upload your data"))),
+                      width = 12))),
+                    
                     fluidRow(
-                      column(
+                      column(12,
                         box(title = "Selected Data Dimensions",
                             div(style = "padding-left: 10px; display: inline-block; vertical-align: middle;",
-                                htmlOutput("data_dimensions")
-                            ),
-                        ),
-                        width = 12
-                        
-                      ),
-                    column(
-                      box(title = "Null/NA/Empty Counts Per Column",
+                                htmlOutput("data_dimensions")), 
+                        width = 12))),
+                    
+                      fluidRow(
+                      column(12,
+                        box(title = "Null/NA/Empty Counts Per Column",
                           div(style = "padding-left: 10px; display: inline-block; vertical-align: middle;",
                               DT::dataTableOutput("null_counts")
-                          ),
-                      ),
-                      width = 12
-                    ),
-                    width = 12
-                    ),
-                    fluidRow(
+                          ), 
+                          width = 12))),
                       
-                        box(title = "Numeric Data",
-                            selectInput(inputId = "variables_selected",
-                                        label = 'Select a variable',
-                                        choices = c("header2")),
-                            plotOutput("plot1", height = 250)),
-                        box(
-                            title = "Overall Summary",
-                            div(style = 'overflow-x: scroll', dataTableOutput('overall_summary'))
-                           ),
-                        box(
-                            title = "Raw Data",
-                            div(style = 'overflow-x: scroll', DT::dataTableOutput('raw_data'))
-                            ),
-                           
-
-            )
+                      fluidRow(
+                        column(12, 
+                               box(title = "Numeric Data",
+                                   selectInput(inputId = "variables_selected",
+                                               label = 'Select a variable',
+                                               choices = c("header2")),
+                                   plotOutput("plot1", height = 250),
+                                   width = 12))),
+                    fluidRow(
+                        column(12, 
+                               box(
+                                 title = "Overall Summary",
+                                 div(style = 'overflow-x: scroll', dataTableOutput('overall_summary'))
+                               , 
+                               width = 12))),
+                    fluidRow(
+                        column(12, 
+                               box(
+                                 title = "Raw Data",
+                                 div(style = 'overflow-x: scroll', DT::dataTableOutput('raw_data')), 
+                               width = 12)))
             ),    
 
             # Second tab content
